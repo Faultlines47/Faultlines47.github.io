@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About — Fault Lines</title>
+  <meta name="description" content="About Fault Lines — independent geopolitical analysis of the Middle East and beyond."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface2: #161616;
+      --border: #242424;
+      --text: #f0ece4;
+      --text-secondary: #888880;
+      --text-muted: #555550;
+      --accent: #c41e1e;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+    a { color: inherit; text-decoration: none; }
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-wordmark {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+
+    .page-header {
+      padding: 140px 48px 60px;
+      border-bottom: 1px solid var(--border);
+      animation: fadeUp 0.9s ease both;
+    }
+    .page-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .page-label::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--accent);
+    }
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 900;
+      line-height: 1.1;
+      max-width: 700px;
+    }
+    .page-title em { font-style: italic; color: var(--text-secondary); }
+
+    .about-content {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 80px 48px;
+      animation: fadeUp 0.9s 0.15s ease both;
+    }
+    .about-content p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      font-weight: 300;
+    }
+    .about-content p strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .about-content h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 52px 0 20px;
+      line-height: 1.3;
+    }
+    .pull-quote {
+      border-left: 3px solid var(--accent);
+      padding: 4px 0 4px 28px;
+      margin: 44px 0;
+    }
+    .pull-quote p {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .topics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin: 40px 0;
+    }
+    .topic-item {
+      background: var(--bg);
+      padding: 24px 28px;
+    }
+    .topic-item .tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .topic-item p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    footer {
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+    .footer-wordmark {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .footer-wordmark span { color: var(--accent); }
+    .footer-copy {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+    .footer-links { display: flex; gap: 28px; list-style: none; }
+    .footer-links a {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .page-header { padding: 120px 24px 48px; }
+      .about-content { padding: 48px 24px; }
+      .topics-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 20px; text-align: center; padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-wordmark">Fault<span>Lines</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="blog.html">Analysis</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <header class="page-header">
+    <div class="page-label">About</div>
+    <h1 class="page-title">Analysis that goes <em>deeper</em> than the headlines</h1>
+  </header>
+
+  <div class="about-content">
+    <p><strong>Fault Lines</strong> is an independent geopolitical publication focused on the Middle East and global politics. It was built on a simple premise: most coverage of the region is shallow, agenda-driven, or simply wrong.</p>
+
+    <p>The name is deliberate. A fault line is the place where tectonic plates meet — where pressure builds invisibly beneath the surface until it cannot be contained. The most important political forces in our world operate the same way. They are rarely visible in the headlines. They require digging.</p>
+
+    <div class="pull-quote">
+      <p>"You cannot understand what Hezbollah is without understanding where it came from. You cannot understand Lebanon without understanding who has always been left out."</p>
+    </div>
+
+    <p>Fault Lines exists to do that digging. To go back further than the incident, the airstrike, the election. To ask not just <em>what happened</em> but <em>why this was always going to happen</em>.</p>
+
+    <h2>What we cover</h2>
+    <p>The focus is the Middle East — Lebanon, the broader Levant, Iran, the Gulf — but the analysis extends wherever power, conflict, and politics intersect.</p>
+
+    <div class="topics-grid">
+      <div class="topic-item">
+        <div class="tag">Lebanon</div>
+        <p>Sectarian politics, Hezbollah, the civil war legacy, the 2020 explosion, and the ongoing collapse of the state.</p>
+      </div>
+      <div class="topic-item">
+        <div class="tag">Geopolitics</div>
+        <p>Regional power struggles, foreign intervention, proxy conflicts, and the forces that make states weak or strong.</p>
+      </div>
+      <div class="topic-item">
+        <div class="tag">Political History</div>
+        <p>The deep roots of today's conflicts. Why nothing in the Middle East makes sense without knowing what came before.</p>
+      </div>
+      <div class="topic-item">
+        <div class="tag">On The Ground</div>
+        <p>First-hand accounts and political tourism — what the places that make the news actually look and feel like.</p>
+      </div>
+    </div>
+
+    <h2>Who writes this</h2>
+    <p>Fault Lines is written independently by someone with a deep personal interest in Middle Eastern politics and a commitment to going beyond surface-level analysis. No institutional backing. No editorial agenda. No allegiance to any state or faction.</p>
+
+    <p>All analysis is independent. All content is free to read.</p>
+  </div>
+
+  <footer>
+    <div class="footer-wordmark">Fault<span>Lines</span></div>
+    <p class="footer-copy">© 2025 Fault Lines. Independent analysis.</p>
+    <ul class="footer-links">
+      <li><a href="blog.html">Analysis</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analysis — Fault Lines</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a; --surface: #111111; --surface2: #161616;
+      --border: #242424; --text: #f0ece4; --text-secondary: #888880;
+      --text-muted: #555550; --accent: #c41e1e;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Source Serif 4', Georgia, serif; font-size: 18px; line-height: 1.7; overflow-x: hidden; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1000; opacity: 0.4;
+    }
+    a { color: inherit; text-decoration: none; }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 64px;
+      background: rgba(10,10,10,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-wordmark { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+
+    .page-header { padding: 140px 48px 60px; border-bottom: 1px solid var(--border); animation: fadeUp 0.9s ease both; }
+    .page-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+    .page-label::after { content: ''; display: block; width: 40px; height: 1px; background: var(--accent); }
+    .page-title { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 900; line-height: 1.1; }
+
+    /* Filter tabs */
+    .filter-bar {
+      padding: 32px 48px;
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active { border-color: var(--accent); color: var(--accent); }
+
+    /* Article list */
+    .articles-list { animation: fadeUp 0.9s 0.15s ease both; }
+
+    .article-row {
+      display: grid;
+      grid-template-columns: 120px 1fr auto;
+      gap: 40px;
+      align-items: start;
+      padding: 40px 48px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .article-row:hover { background: var(--surface2); }
+
+    .article-row-date {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      padding-top: 6px;
+    }
+
+    .article-row-content {}
+    .article-row-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .article-row-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      transition: color 0.2s;
+    }
+    .article-row:hover .article-row-title { color: var(--text-secondary); }
+    .article-row-excerpt {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      line-height: 1.65;
+      max-width: 600px;
+    }
+
+    .article-row-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+      padding-top: 6px;
+      white-space: nowrap;
+    }
+    .read-time {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+    .coming-soon-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    /* Empty state */
+    .empty-note {
+      padding: 80px 48px;
+      text-align: center;
+      color: var(--text-muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+    }
+
+    footer { padding: 40px 48px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); }
+    .footer-wordmark { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+    .footer-wordmark span { color: var(--accent); }
+    .footer-copy { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; color: var(--text-muted); }
+    .footer-links { display: flex; gap: 28px; list-style: none; }
+    .footer-links a { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .page-header { padding: 120px 24px 48px; }
+      .filter-bar { padding: 24px; }
+      .article-row { grid-template-columns: 1fr; gap: 16px; padding: 32px 24px; }
+      .article-row-date { padding-top: 0; }
+      .article-row-meta { flex-direction: row; align-items: center; }
+      footer { flex-direction: column; gap: 20px; text-align: center; padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-wordmark">Fault<span>Lines</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="blog.html" class="active">Analysis</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <header class="page-header">
+    <div class="page-label">All Articles</div>
+    <h1 class="page-title">Analysis</h1>
+  </header>
+
+  <div class="filter-bar">
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Lebanon</button>
+    <button class="filter-btn">Hezbollah</button>
+    <button class="filter-btn">Geopolitics</button>
+    <button class="filter-btn">On The Ground</button>
+    <button class="filter-btn">Political History</button>
+  </div>
+
+  <div class="articles-list">
+    <div class="article-row">
+      <div class="article-row-date">2025<br>Coming<br>Soon</div>
+      <div class="article-row-content">
+        <div class="article-row-tag">Lebanon · Hezbollah</div>
+        <h2 class="article-row-title">Why Is Hezbollah What It Is? From the Movement of the Deprived to the Most Powerful Non-State Actor in the World</h2>
+        <p class="article-row-excerpt">To understand Hezbollah, you have to go back further than 1982. You have to go back to a community that for decades was invisible — the Lebanese Shia, the poorest and most marginalised group in a country built on deliberate fragmentation.</p>
+      </div>
+      <div class="article-row-meta">
+        <span class="read-time">20 min read</span>
+        <span class="coming-soon-badge">Coming Soon</span>
+      </div>
+    </div>
+
+    <div class="article-row">
+      <div class="article-row-date">2025<br>Coming<br>Soon</div>
+      <div class="article-row-content">
+        <div class="article-row-tag">Lebanon · Political History</div>
+        <h2 class="article-row-title">Musa al-Sadr and the Birth of Shia Political Consciousness in Lebanon</h2>
+        <p class="article-row-excerpt">A cleric who arrived in 1959 and transformed an entire community before vanishing without trace in 1978. His legacy built the foundations for everything that followed.</p>
+      </div>
+      <div class="article-row-meta">
+        <span class="read-time">15 min read</span>
+        <span class="coming-soon-badge">Coming Soon</span>
+      </div>
+    </div>
+
+    <div class="article-row">
+      <div class="article-row-date">2025<br>Coming<br>Soon</div>
+      <div class="article-row-content">
+        <div class="article-row-tag">Lebanon · Politics</div>
+        <h2 class="article-row-title">The Confessional Trap: How Lebanon's Political System Keeps It Broken</h2>
+        <p class="article-row-excerpt">A census taken in 1932 under French colonial rule still determines who holds power in Lebanon today. Understanding why tells you almost everything about the country's ongoing crises.</p>
+      </div>
+      <div class="article-row-meta">
+        <span class="read-time">12 min read</span>
+        <span class="coming-soon-badge">Coming Soon</span>
+      </div>
+    </div>
+
+    <div class="article-row">
+      <div class="article-row-date">2025<br>Coming<br>Soon</div>
+      <div class="article-row-content">
+        <div class="article-row-tag">Beirut · On The Ground</div>
+        <h2 class="article-row-title">Political Tourism in Beirut: A Guide to the City's Most Charged Spaces</h2>
+        <p class="article-row-excerpt">From Dahiyeh to Martyrs' Square, the port explosion site to Shatila camp — Beirut is a city where history is still visibly unresolved and every neighbourhood tells a different story.</p>
+      </div>
+      <div class="article-row-meta">
+        <span class="read-time">10 min read</span>
+        <span class="coming-soon-badge">Coming Soon</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-wordmark">Fault<span>Lines</span></div>
+    <p class="footer-copy">© 2025 Fault Lines. Independent analysis.</p>
+    <ul class="footer-links">
+      <li><a href="blog.html">Analysis</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
